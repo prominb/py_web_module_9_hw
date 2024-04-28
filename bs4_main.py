@@ -11,39 +11,37 @@ FILE_AUTHORS = "authors.json"
 
 
 def start_parser():
-    # quotes_list = list()
+    quotes_list = list()
     authors_list = list()
-    # print(authors_list)
-    # print(f"===>>> START PAGE {BASE_URL}")
-    # response = requests.get(BASE_URL)
-    # soup = BeautifulSoup(response.text, 'lxml')
-    # quotes_on_page = get_quotes_on_page(soup)
-    # quotes_list.extend(quotes_on_page)
-    # authors_link_list = get_links_authors(soup, authors_list)
-    # next_page = get_next_page(BASE_URL)
-    # while next_page is not None:
-    #     sleep(0.5)
-    #     print(f"===>>> START PAGE {next_page}")
-    #     next_response = requests.get(next_page)
-    #     next_soup = BeautifulSoup(next_response.text, 'lxml')
-    #     quotes_on_page = get_quotes_on_page(next_soup)
-    #     quotes_list.extend(quotes_on_page)
-    #     authors_link_list = get_links_authors(next_soup, authors_link_list)
-    #     sleep(0.5)
-    #     next_page = get_next_page(next_page)
-    # else:
-    #     print("THE END!")
+    print(authors_list)
+    print(f"===>>> START PAGE {BASE_URL}")
+    response = requests.get(BASE_URL)
+    soup = BeautifulSoup(response.text, 'lxml')
+    quotes_on_page = get_quotes_on_page(soup)
+    quotes_list.extend(quotes_on_page)
+    authors_link_list = get_links_authors(soup, authors_list)
+    next_page = get_next_page(BASE_URL)
+    while next_page is not None:
+        sleep(0.5)
+        print(f"===>>> START PAGE {next_page}")
+        next_response = requests.get(next_page)
+        next_soup = BeautifulSoup(next_response.text, 'lxml')
+        quotes_on_page = get_quotes_on_page(next_soup)
+        quotes_list.extend(quotes_on_page)
+        authors_link_list = get_links_authors(next_soup, authors_link_list)
+        sleep(0.5)
+        next_page = get_next_page(next_page)
+    else:
+        print("THE END!")
 
     # with open("authors_link_list.txt", "w", encoding="utf-8") as fh:
     #     for link_elem in authors_link_list:
     #         fh.write(link_elem + "\n")
     with open("authors_link_list.txt") as fh:
         lines = fh.readlines()
-        # print(lines)
     new_link_list = list()
     for link in lines:
         new_link = link.rstrip("\n")
-        # print(f"NNN{test123}BBBB")
         new_link_list.append(new_link)
     # print(len(new_link_list))
     # for idx in range(15):
@@ -51,15 +49,7 @@ def start_parser():
         # author_from_page = get_author(new_link_list[idx])
         author_from_page = get_author(lnk)
         authors_list.append(author_from_page)
-    
-    # for link_elem in authors_link_list:
-    #     print(link_elem)
-    #     author_from_page = get_author(link_elem)
-    #     authors_list.append(author_from_page)
-    # print(authors_list)
-    
-
-    # print(write_to_json(FILE_QUOTES, quotes_list))
+    print(write_to_json(FILE_QUOTES, quotes_list))
     print(write_to_json(FILE_AUTHORS, authors_list))
 
 
