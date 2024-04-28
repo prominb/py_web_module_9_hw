@@ -6,32 +6,52 @@ from bs4 import BeautifulSoup
 
 
 BASE_URL = "https://quotes.toscrape.com"
-FILE_QUOTES = "quotes.json"
-FILE_AUTHORS = "authors.json"
-
-response = requests.get(BASE_URL)
-soup = BeautifulSoup(response.text, 'lxml')
+# BASE_URL = "https://quotes.toscrape.com/page/10/"
+FILE_QUOTES = "quotes2.json"
+FILE_AUTHORS = "authors2.json"
 
 
-def get_quotes() -> list[dict]:
-    json_list = list()
+def start_parser():
+    quotes_list = list()
+    authors_list = list()
+    response = requests.get(BASE_URL)
+    soup = BeautifulSoup(response.text, 'lxml')
+    quotes_on_page = get_quotes_on_page(soup)
+    quotes_list.extend(quotes_on_page)
+    authors_links_list = get_links_authors(soup)
+    authors_on_page = get_authors_on_page(authors_links_list)
+    authors_list.extend(authors_on_page)
+    next_page = get_next_page(BASE_URL)
+    while next_page is not None:
+        print(next_page)
+        sleep(1.1)
+        next_page = get_next_page(next_page)
+    else:
+        print("THE END!")
+
+    # print(write_to_json(FILE_QUOTES, quotes_list))
+    # print(write_to_json(FILE_AUTHORS, authors_list))
+
+
+def get_quotes_on_page(soup: BeautifulSoup) -> list[dict]:
+    result_list = list()
     quotes_list = [quote.text for quote in soup.find_all('span', class_="text")]
     authors_list = [author.text for author in soup.find_all('small', class_="author")]
     tags_list = [tag.text.replace('Tags:', '').strip().split('\n') for tag in soup.find_all('div', class_="tags")]
     for quote, author, tags in zip(quotes_list, authors_list, tags_list):
-        json_list.append(
+        result_list.append(
             {
                 "tags": tags,
                 "author": author,
                 "quote": quote
             }
         )
-    print(write_to_json(FILE_QUOTES, json_list))
+    return result_list
 
 
-def get_authors(links_list: list) -> list[dict]:
+def get_authors_on_page(links_list: list) -> list[dict]:
     if links_list:
-        json_list = list()
+        result_list = list()
         for link in links_list:
             sleep(1.2)
             response = requests.get(link)
@@ -40,7 +60,7 @@ def get_authors(links_list: list) -> list[dict]:
             born_date = soup.find('span', class_="author-born-date").text
             born_location = soup.find('span', class_="author-born-location").text
             description = soup.find('div', class_="author-description").text.strip()
-            json_list.append(
+            result_list.append(
                 {
                     "fullname": fullname,
                     "born_date": born_date,
@@ -48,12 +68,12 @@ def get_authors(links_list: list) -> list[dict]:
                     "description": description
                 }
             )
-        print(write_to_json(FILE_AUTHORS, json_list))
+        return result_list
     else:
-        print("List is Empty!")
+        return ["Authors links List is Empty!"]
 
 
-def get_author_links() -> list:
+def get_links_authors(soup: BeautifulSoup) -> list:
     author_links_list = list()
     get_author_links = soup.find_all('a', string="(about)")
     for lk in get_author_links:
@@ -68,22 +88,20 @@ def write_to_json(filename, data):
     return f"Save {filename}"
 
 
-def get_next_page():
-    # href = soup.select("[href^='/page/']")
-    # print(type(href), len(href), href)
+def get_next_page(url: str) -> str | None:
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'lxml')
     get_href = soup.select("li.next a")
-    # print(get_href)
-    get_href_link = get_href[0].attrs
-    # print(type(get_link["href"]), get_link["href"])
-    get_page_link = BASE_URL + get_href_link.get("href")
-    return get_page_link
+    if get_href:
+        get_href_link = get_href[0].attrs
+        get_page_link = BASE_URL + get_href_link.get("href")
+        return get_page_link
+    else:
+        return None
 
 
 def main():
-    # get_quotes()
-    # get_authors(get_author_links())
-    # get_author_links()
-    print(get_next_page())
+    start_parser()
 
 
 if __name__ == '__main__':
