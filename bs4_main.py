@@ -73,16 +73,17 @@ def get_next_page():
     # print(type(href), len(href), href)
     get_href = soup.select("li.next a")
     # print(get_href)
-    get_page_link = get_href[0].attrs
+    get_href_link = get_href[0].attrs
     # print(type(get_link["href"]), get_link["href"])
+    get_page_link = BASE_URL + get_href_link.get("href")
     return get_page_link
 
 
 def main():
     # get_quotes()
     # get_authors(get_author_links())
-    get_author_links()
-    # get_next_page()
+    # get_author_links()
+    print(get_next_page())
 
 
 if __name__ == '__main__':
