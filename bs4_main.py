@@ -54,12 +54,12 @@ def get_authors(links_list: list) -> list[dict]:
 
 
 def get_author_links() -> list:
-    author_links_set = set()
+    author_links_list = list()
     get_author_links = soup.find_all('a', string="(about)")
     for lk in get_author_links:
-        author_links_set.add(BASE_URL + lk["href"])
-    # print(list(author_links_set))
-    return list(author_links_set)
+        if (BASE_URL + lk["href"]) not in author_links_list:
+            author_links_list.append(BASE_URL + lk["href"])
+    return author_links_list
 
 
 def write_to_json(filename, data):
