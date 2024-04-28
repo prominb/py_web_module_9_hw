@@ -2,11 +2,15 @@ test1.py
 test1.html
 test2.py
 test3.py
+test4.py
 quotes.json
 authors.json
 author.html
 quotes2.json
 authors2.json
+quotes3.json
+authors3.json
+authors_link_list.txt
 # storage/
 # data.json
 
