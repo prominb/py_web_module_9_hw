@@ -44,8 +44,12 @@ def get_authors():
 
 def write_to_json(filename, json_list):
     with open(filename, "w", encoding="utf-8") as fh:
-        json.dump(json_list, fh, indent=4)
-    return "DONE."
+        json.dump(json_list, fh, ensure_ascii=False, indent=4)
+    return "DONE."  # https://docs.python.org/3/library/json.html#basic-usage ensure_ascii=False \u201c \u201d
+
+
+def get_next_page():
+    pass
 
 
 def main():
