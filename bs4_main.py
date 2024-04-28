@@ -27,20 +27,35 @@ def get_quotes() -> list[dict]:
     print(write_to_json(FILE_QUOTES, json_list))
 
 
-def get_authors():
-    # get_author_link = soup.find_all('a')
-    # print(get_author_link)
-    # for lk in get_author_link:
-    #     print(lk["href"])
-    # get_author_links = get_author_link["href"]
-    # print(get_author_links)
-    # get_author_links = soup.find_all(string="(about)")
-    # print(get_authors_link)
+def get_authors(links_list: list) -> list[dict]:
+    # print(links_list)
+    response = requests.get(links_list[0])
+    soup = BeautifulSoup(response.text, 'lxml')
+    # print(soup)
+    # test = {
+    #   "fullname": "Albert Einstein",
+    #   "born_date": "March 14, 1879",
+    #   "born_location": "in Ulm, Germany",
+    #   "description": "In 1879, Albert Einstein was born in Ulm, Germany. He"
+    # }
+
+    # fullname = soup.find('h3', class_="author-title").text
+    # print(type(fullname), f">S>{fullname}<F<")
+    # born_date = soup.find('span', class_="author-born-date").text
+    # print(type(born_date), f">S>{born_date}<F<")
+    # born_location = soup.find('span', class_="author-born-location").text
+    # print(type(born_location), f">S>{born_location}<F<")
+    # description = soup.find('div', class_="author-description").text
+    description = soup.find('div', class_="author-description").text.strip()
+    print(description)
+
+
+def get_author_links() -> list:
+    author_links_list = list()
     get_author_links = soup.find_all('a', string="(about)")
-    # print(get_author_links)
     for lk in get_author_links:
-        # print(type(lk["href"]), lk["href"])
-        print(BASE_URL + lk["href"])
+        author_links_list.append(BASE_URL + lk["href"])
+    return author_links_list
 
 
 def write_to_json(filename, data):
@@ -61,7 +76,8 @@ def get_next_page():
 
 def main():
     # get_quotes()
-    get_authors()
+    get_authors(get_author_links())
+    # get_author_links()
     # get_next_page()
 
 
