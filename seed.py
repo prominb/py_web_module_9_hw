@@ -19,6 +19,6 @@ if __name__ == '__main__':
         data = json.load(fd)
         for el in data:
             author, *_ = Author.objects(fullname=el.get('author'))
-            # print(author)  
+            # print(author.id)  # CHECK
             quote = Quote(quote=el.get('quote'), tags=el.get('tags'), author=author)
             quote.save()
