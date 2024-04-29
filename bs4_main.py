@@ -6,14 +6,13 @@ from bs4 import BeautifulSoup
 
 
 BASE_URL = "https://quotes.toscrape.com"
-FILE_QUOTES = "quotes4.json"
-FILE_AUTHORS = "authors4.json"
+FILE_QUOTES = "quotes.json"
+FILE_AUTHORS = "authors.json"
 
 
 def start_parser():
     quotes_list = list()
     authors_list = list()
-    # print(authors_list)
     authors_link_list = list()
     print(f"===>>> START PAGE {BASE_URL}")
     response = requests.get(BASE_URL)
@@ -35,20 +34,7 @@ def start_parser():
     else:
         print("THE END!")
 
-    # with open("authors_link_list.txt", "w", encoding="utf-8") as fh:
-    #     for link_elem in authors_link_list:
-    #         fh.write(link_elem + "\n")
-    # with open("authors_link_list.txt") as fh:
-    #     lines = fh.readlines()
-    # new_link_list = list()
-    # for link in lines:
-    #     new_link = link.rstrip("\n")
-    #     new_link_list.append(new_link)
-    # print(len(new_link_list))
-    # for idx in range(15):
     for lnk in authors_link_list:
-    # for lnk in new_link_list:
-        # author_from_page = get_author(new_link_list[idx])
         author_from_page = get_author(lnk)
         authors_list.append(author_from_page)
     print(write_to_json(FILE_QUOTES, quotes_list))
